@@ -9,7 +9,7 @@ import { Table } from './components/Table';
 
 const products = productsFromServer.map((product) => {
   const category = categoriesFromServer.find(
-    cat => cat.id === product.categoryId,
+    catFrServ => catFrServ.id === product.categoryId,
   );
   const user = usersFromServer.find(
     userFromServ => userFromServ.id === category.ownerId,
@@ -26,11 +26,13 @@ export const App = () => {
   const [visibleProducts, setVisibleProducts] = useState(products);
   const [selectedUser, setSelectedUser] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [category, setCategory] = useState([]);
 
   useEffect(() => {
     handleUserChange();
     handleSearchChange();
-  }, [searchQuery, selectedUser]);
+    handleCategory();
+  }, [searchQuery, selectedUser, category]);
 
   const handleUserChange = () => {
     if (selectedUser !== 'All') {
@@ -46,6 +48,14 @@ export const App = () => {
     setVisibleProducts(prevVisProd => prevVisProd.filter(
       prod => prod.name.toLowerCase().includes(searchQuery.toLowerCase()),
     ));
+  };
+
+  const handleCategory = () => {
+    if (category.length) {
+      setVisibleProducts(prevVisProd => prevVisProd.filter(
+        prod => category.includes(prod.categoryId),
+      ));
+    }
   };
 
   const handleResetAll = () => {
@@ -76,45 +86,21 @@ export const App = () => {
                 All
               </a>
 
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({
-                  'is-active': selectedUser === 'Roma',
-                })}
-                onClick={() => {
-                  setSelectedUser('Roma');
-                }}
-              >
-                Roma
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({
-                  'is-active': selectedUser === 'Anna',
-                })}
-                onClick={() => {
-                  setSelectedUser('Anna');
-                }}
-              >
-                Anna
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({
-                  'is-active': selectedUser === 'Max',
-                })}
-                onClick={() => {
-                  setSelectedUser('Max');
-                }}
-              >
-                Max
-              </a>
-
+              {usersFromServer.map(userFrServ => (
+                <a
+                  key={userFrServ.id}
+                  data-cy="FilterUser"
+                  href="#/"
+                  className={classNames({
+                    'is-active': selectedUser === userFrServ.name,
+                  })}
+                  onClick={() => {
+                    setSelectedUser(userFrServ.name);
+                  }}
+                >
+                  {userFrServ.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
@@ -149,41 +135,35 @@ export const App = () => {
               <a
                 href="#/"
                 data-cy="AllCategories"
-                className="button is-success mr-6 is-outlined"
+                className={classNames(
+                  'button',
+                  'is-success',
+                  'mr-6',
+                  { 'is-outlined': !category.length },
+                )}
+                onClick={() => setCategory([])}
               >
                 All
               </a>
 
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 1
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Category 2
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 3
-              </a>
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Category 4
-              </a>
+              {categoriesFromServer.map(currCategory => (
+                <a
+                  data-cy="Category"
+                  className={classNames(
+                    'button',
+                    'mr-2',
+                    'my-1',
+                    { 'is-info': category.includes(currCategory.id) },
+                  )}
+                  href="#/"
+                  key={currCategory.id}
+                  onClick={() => setCategory(
+                    prevCategory => [...prevCategory, currCategory.id],
+                  )}
+                >
+                  {`${currCategory.title}`}
+                </a>
+              ))}
             </div>
 
             <div className="panel-block">

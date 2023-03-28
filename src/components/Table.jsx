@@ -62,7 +62,11 @@ export const Table = ({ products }) => (
 
       {products.map(({ id, name, category, user }) => (
         <tr data-cy="Product">
-          <td className="has-text-weight-bold" data-cy="ProductId">
+          <td
+            className="has-text-weight-bold"
+            data-cy="ProductId"
+            key={id}
+          >
             {id}
           </td>
 
