@@ -29,13 +29,24 @@ const products = productsFromServer.map((product) => {
 export const App = () => {
   const [currentProducts, setCurrentProducts] = useState(products);
   const [currentUserId, setCurrentUserId] = useState(0);
+  const [inputSearch, setInputSearch] = useState('');
 
   const handleFilterByUser = (userId) => {
     const filtered = products
-      .filter(product => product.category.ownerId === userId);
+      .filter(product => product.category.ownerId === userId
+        && (product.name.includes(inputSearch.toLowerCase())
+        || product.name.includes(inputSearch.toUpperCase())));
 
     setCurrentProducts(filtered);
   };
+
+  // const handleFilterByInput = () => {
+  //   const filtered = currentProducts.filter(product => product.name
+  //     .includes(inputSearch.toLowerCase())
+  //   || product.name.includes(inputSearch.toUpperCase()));
+
+  //   setCurrentProducts(filtered);
+  // };
 
   return (
     <div className="section">
@@ -59,41 +70,22 @@ export const App = () => {
                 All
               </a>
 
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({ 'is-active': currentUserId === 1 })}
-                onClick={() => {
-                  setCurrentUserId(1);
-                  handleFilterByUser(1);
-                }}
-              >
-                User 1
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({ 'is-active': currentUserId === 2 })}
-                onClick={() => {
-                  setCurrentUserId(2);
-                  handleFilterByUser(2);
-                }}
-              >
-                User 2
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className={classNames({ 'is-active': currentUserId === 3 })}
-                onClick={() => {
-                  setCurrentUserId(3);
-                  handleFilterByUser(3);
-                }}
-              >
-                User 3
-              </a>
+              {usersFromServer.map(user => (
+                <a
+                  key={user.id}
+                  data-cy="FilterUser"
+                  href="#/"
+                  className={classNames(
+                    { 'is-active': currentUserId === user.id },
+                  )}
+                  onClick={() => {
+                    setCurrentUserId(user.id);
+                    handleFilterByUser(user.id);
+                  }}
+                >
+                  {user.name}
+                </a>
+              )) }
             </p>
 
             <div className="panel-block">
@@ -103,21 +95,31 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={inputSearch}
+                  onChange={(event) => {
+                    setInputSearch(event.target.value);
+                    handleFilterByUser(currentUserId);
+                  }}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
+                {inputSearch.length === 0 || (
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                   <button
                     data-cy="ClearButton"
                     type="button"
                     className="delete"
+                    onClick={() => {
+                      setInputSearch('');
+                    }}
                   />
                 </span>
+                )}
+
               </p>
             </div>
 
@@ -167,6 +169,11 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={() => {
+                  setCurrentProducts(products);
+                  setCurrentUserId(0);
+                  setInputSearch('');
+                }}
               >
                 Reset all filters
               </a>
@@ -175,10 +182,15 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
+          {currentProducts.length !== 0
+          || (
           <p data-cy="NoMatchingMessage">
             No products matching selected criteria
           </p>
+          )}
 
+          {currentProducts.length === 0
+          || (
           <table
             data-cy="ProductTable"
             className="table is-striped is-narrow is-fullwidth"
@@ -237,7 +249,7 @@ export const App = () => {
 
             <tbody>
               {currentProducts.map(product => (
-                <tr data-cy="Product">
+                <tr data-cy="Product" key={product.id}>
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}
                   </td>
@@ -251,7 +263,6 @@ export const App = () => {
                       { 'has-text-link': product.user.sex === 'm' },
                       { 'has-text-danger': product.user.sex === 'f' },
                     )}
-                    // className="has-text-link"
                   >
                     {product.user.name}
                   </td>
@@ -259,6 +270,7 @@ export const App = () => {
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
     </div>
