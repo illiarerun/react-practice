@@ -40,17 +40,13 @@ export const App = () => {
     return checkFilter(user, selectedUserId, filterInput);
   })};
 
-  const filteredProductsByInput = () => {
-    products.filter((pro))
-  };
-
   const showAllUsers = () => {
     setfilteredProducts(products);
   };
 
   const handleFilterInput = (event) => {
     setfilterInput(event.target.value);
-    setfilteredProducts(filteredProductsByInput);
+    setfilteredProducts(filteredProductsByUser);
   };
 
   return (
