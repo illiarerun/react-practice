@@ -23,11 +23,11 @@ export const App = () => {
 
     const productsByUser = [...productsToShow];
 
-  //   // const productsByUser = selectedUser === 'All'
-  //   //   ? products
-  //   //   : products.filter(
-  //   //     ({ categoryId }) => categories.find(({ id }) => id === categoryId),
-  //   //   );
+    //   // const productsByUser = selectedUser === 'All'
+    //   //   ? products
+    //   //   : products.filter(
+    //   //     ({ categoryId }) => categories.find(({ id }) => id === categoryId),
+    //   //   );
 
     setProductsToShow(productsByUser);
   }, [
@@ -58,6 +58,13 @@ export const App = () => {
   const handleResetAll = () => {
     setSelectedUser('All');
     setSelectedCategory('All');
+  };
+
+  const getCategoryIconById = (catId) => {
+    const catObj = categoriesFromServer
+      .find(category => category.id === catId);
+
+    return `${catObj.icon} - ${catObj.title}`;
   };
 
   return (
@@ -186,7 +193,10 @@ export const App = () => {
 
                         <a href="#/">
                           <span className="icon">
-                            <i data-cy="SortIcon" className="fas fa-sort-down" />
+                            <i
+                              data-cy="SortIcon"
+                              className="fas fa-sort-down"
+                            />
                           </span>
                         </a>
                       </span>
@@ -219,14 +229,16 @@ export const App = () => {
                 </thead>
 
                 <tbody>
-                  {productsToShow.map((product) => (
+                  {productsToShow.map(product => (
                     <tr data-cy="Product">
                       <td className="has-text-weight-bold" data-cy="ProductId">
                         {product.id}
                       </td>
 
                       <td data-cy="ProductName">{product.name}</td>
-                      <td data-cy="ProductCategory">{product.category}</td>
+                      <td data-cy="ProductCategory">
+                        {getCategoryIconById(product.categoryId)}
+                      </td>
 
                       <td
                         data-cy="ProductUser"
