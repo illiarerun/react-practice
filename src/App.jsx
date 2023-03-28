@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.scss';
 
+import classNames from 'classnames';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
 import { Table } from './components/Table';
-import classNames from "classnames";
 
 const products = productsFromServer.map((product) => {
   const category = categoriesFromServer.find(
@@ -25,8 +25,14 @@ const products = productsFromServer.map((product) => {
 export const App = () => {
   const [visibleProducts, setVisibleProducts] = useState(products);
   const [selectedUser, setSelectedUser] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    handleUserChange();
+    handleSearchChange();
+  }, [searchQuery, selectedUser]);
+
+  const handleUserChange = () => {
     if (selectedUser !== 'All') {
       setVisibleProducts(products.filter(
         prod => prod.user.name === selectedUser,
@@ -34,7 +40,13 @@ export const App = () => {
     } else {
       setVisibleProducts(products);
     }
-  });
+  };
+
+  const handleSearchChange = () => {
+    setVisibleProducts(prevVisProd => prevVisProd.filter(
+      prod => prod.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    ));
+  };
 
   return (
     <div className="section">
@@ -52,7 +64,9 @@ export const App = () => {
                 className={classNames({
                   'is-active': selectedUser === 'All',
                 })}
-                onClick={() => setSelectedUser('All')}
+                onClick={() => {
+                  setSelectedUser('All');
+                }}
               >
                 All
               </a>
@@ -63,7 +77,9 @@ export const App = () => {
                 className={classNames({
                   'is-active': selectedUser === 'Roma',
                 })}
-                onClick={() => setSelectedUser('Roma')}
+                onClick={() => {
+                  setSelectedUser('Roma');
+                }}
               >
                 Roma
               </a>
@@ -74,7 +90,9 @@ export const App = () => {
                 className={classNames({
                   'is-active': selectedUser === 'Anna',
                 })}
-                onClick={() => setSelectedUser('Anna')}
+                onClick={() => {
+                  setSelectedUser('Anna');
+                }}
               >
                 Anna
               </a>
@@ -85,7 +103,9 @@ export const App = () => {
                 className={classNames({
                   'is-active': selectedUser === 'Max',
                 })}
-                onClick={() => setSelectedUser('Max')}
+                onClick={() => {
+                  setSelectedUser('Max');
+                }}
               >
                 Max
               </a>
@@ -99,7 +119,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={searchQuery}
+                  onChange={event => setSearchQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
