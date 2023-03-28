@@ -21,11 +21,16 @@ const products = productsFromServer.map((product) => {
 });
 
 export const App = () => {
-  /* eslint-disable-next-line */
   const [activeUserId, setActiveUserId] = useState(0);
-  /* eslint-disable-next-line */
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const visibleProducts = products.filter((product) => {
+    const { user, name } = product;
+
+    return (activeUserId === 0 || user.id === activeUserId)
+      && name.toLowerCase().includes(query.toLowerCase());
+  });
 
   /* eslint-disable-next-line */
   const handleCategorySelect = (id) => {
@@ -81,7 +86,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
@@ -201,7 +207,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {products.map((product) => {
+              {visibleProducts.map((product) => {
                 const {
                   id,
                   name,
