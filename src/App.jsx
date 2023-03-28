@@ -27,7 +27,15 @@ const products = productsFromServer.map((product) => {
 });
 
 export const App = () => {
-  const [currentProducts] = useState(products);
+  const [currentProducts, setCurrentProducts] = useState(products);
+  const [currentUserId, setCurrentUserId] = useState(0);
+
+  const handleFilterByUser = (userId) => {
+    const filtered = products
+      .filter(product => product.category.ownerId === userId);
+
+    setCurrentProducts(filtered);
+  };
 
   return (
     <div className="section">
@@ -42,6 +50,11 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
+                className={classNames({ 'is-active': currentUserId === 0 })}
+                onClick={() => {
+                  setCurrentUserId(0);
+                  setCurrentProducts(products);
+                }}
               >
                 All
               </a>
@@ -49,6 +62,11 @@ export const App = () => {
               <a
                 data-cy="FilterUser"
                 href="#/"
+                className={classNames({ 'is-active': currentUserId === 1 })}
+                onClick={() => {
+                  setCurrentUserId(1);
+                  handleFilterByUser(1);
+                }}
               >
                 User 1
               </a>
@@ -56,7 +74,11 @@ export const App = () => {
               <a
                 data-cy="FilterUser"
                 href="#/"
-                className="is-active"
+                className={classNames({ 'is-active': currentUserId === 2 })}
+                onClick={() => {
+                  setCurrentUserId(2);
+                  handleFilterByUser(2);
+                }}
               >
                 User 2
               </a>
@@ -64,6 +86,11 @@ export const App = () => {
               <a
                 data-cy="FilterUser"
                 href="#/"
+                className={classNames({ 'is-active': currentUserId === 3 })}
+                onClick={() => {
+                  setCurrentUserId(3);
+                  handleFilterByUser(3);
+                }}
               >
                 User 3
               </a>
