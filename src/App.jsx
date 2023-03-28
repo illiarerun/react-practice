@@ -82,7 +82,9 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
-                className={classNames('is-active' && selectedUserId === 0)}
+                className={classNames(
+                  { 'is-active': selectedUserId === 0 },
+                )}
                 onClick={() => setSelectedUserId(0)}
               >
                 All
@@ -93,7 +95,7 @@ export const App = () => {
                   data-cy="FilterUser"
                   href="#/"
                   className={classNames(
-                    'is-active' && selectedUserId === user.id,
+                    { 'is-active': selectedUserId === user.id },
                   )}
                   onClick={() => setSelectedUserId(user.id)}
                 >
