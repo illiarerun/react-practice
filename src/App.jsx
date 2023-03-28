@@ -20,10 +20,22 @@ const products = productsFromServer.map((product) => {
   };
 });
 
+// const getSortedProducts = (
+//   products,
+//   sortType,
+//   isReversed,
+// ) => {
+//   const sortedProducts = products.sort((prev, next) => {
+
+//   });
+// };
+
 export const App = () => {
   const [selectedOwner, setSelectedOwners] = useState('');
   const [query, setQuery] = useState('');
   const [catSelected, setCatSelected] = useState([]);
+  // const [isSorted, setIsSorted] = useState(false);
+  // const [sortBy, setSortBy] = useState('');
 
   const handleSelectAll = () => {
     const allCategId = categoriesFromServer.map(categ => categ.id);
@@ -231,10 +243,15 @@ export const App = () => {
               <thead>
                 <tr>
                   <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
+                    <span
+                      className="is-flex is-flex-wrap-nowrap"
+                    >
                       ID
 
-                      <a href="#/">
+                      <a
+                        href="#/"
+                        // onClick={setSortBy('id')}
+                      >
                         <span className="icon">
                           <i data-cy="SortIcon" className="fas fa-sort" />
                         </span>
