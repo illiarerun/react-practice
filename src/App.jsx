@@ -22,8 +22,20 @@ const products = productsFromServer.map((product) => {
 
 export const App = () => {
   const [selectedOwner, setSelectedOwners] = useState('');
+  const [query, setQuery] = useState('');
 
-  const filteredByName = products.filter((product) => {
+  const handleQuery = (event) => {
+    setQuery(event.currentTarget.value);
+  };
+
+  const visibleProduct = products.filter((product) => {
+    const normalizeQuery = query.trim().toLowerCase();
+    const normalizeNameProduct = product.name.toLowerCase();
+
+    return normalizeNameProduct.includes(normalizeQuery);
+  });
+
+  const filteredByName = visibleProduct.filter((product) => {
     const { user } = product;
 
     return selectedOwner
@@ -89,21 +101,24 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={handleQuery}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {query && (
+                  <span className="icon is-right">
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQuery('')}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 
