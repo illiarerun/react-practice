@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 import './App.scss';
 
 import usersFromServer from './api/users';
@@ -13,7 +14,7 @@ function findCategorie(id) {
   return categoriesFromServer.find(category => category.ownerId === id);
 }
 
-const newProducts = productsFromServer.map(product => ({
+export const newProducts = productsFromServer.map(product => ({
   ...product,
   user: findUser(categoriesFromServer.ownerId),
   category: findCategorie(product.id),
@@ -37,9 +38,11 @@ export const App = () => {
     setProducts(filtred);
   }, [query]);
 
-  useEffect(() => {
-
-  }, chosenPerson);
+  // useEffect(() => {
+  //   const filtred = products.filter(product => {
+  //     return
+  //   })
+  // }, [chosenPerson]);
 
   return (
     <div className="section">
