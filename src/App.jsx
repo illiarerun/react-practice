@@ -91,6 +91,8 @@ export const App = () => {
     setFilterValue('');
     setSelectedUser(0);
     setSelectedCategories([]);
+    setSortStyle('none');
+    setIsReversed(false);
   };
 
   const handleSortClick = (title) => {
