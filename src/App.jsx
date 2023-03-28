@@ -33,7 +33,7 @@ export const App = () => {
     setQuery('');
   };
 
-  const findProducts = products.filter(product => (
+  const filterProducts = products.filter(product => (
     containsQuery(product.name, query)
   ));
 
@@ -54,13 +54,15 @@ export const App = () => {
                 All
               </a>
 
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className="is-active"
-              >
-                User 2
-              </a>
+              {usersFromServer.map(user => (
+                <a
+                  key={user.id}
+                  data-cy="FilterUser"
+                  href="#/"
+                >
+                  {user.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
@@ -208,7 +210,7 @@ export const App = () => {
 
             <tbody>
 
-              {findProducts.map(({ id, name, category, user }) => (
+              {filterProducts.map(({ id, name, category, user }) => (
                 <tr key={id} data-cy="Product">
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {id}
