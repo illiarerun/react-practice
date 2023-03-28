@@ -24,6 +24,11 @@ export const App = () => {
   const [selectedOwner, setSelectedOwners] = useState('');
   const [query, setQuery] = useState('');
 
+  const handleReset = () => {
+    setSelectedOwners('');
+    setQuery('');
+  };
+
   const handleQuery = (event) => {
     setQuery(event.currentTarget.value);
   };
@@ -168,6 +173,7 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={handleReset}
               >
                 Reset all filters
               </a>
