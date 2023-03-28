@@ -87,7 +87,7 @@ export const App = () => {
         case 'User':
           return p1.user.name.localeCompare(p2.user.name);
         default:
-          return 'ID';
+          return 0;
       }
     });
   }
@@ -238,22 +238,23 @@ export const App = () => {
                           <a
                             href="#/"
                             onClick={() => {
+                              setOrderingState((prevState) => {
+                                let newState = prevState + 1;
+
+                                if (newState === 3) {
+                                  newState = 0;
+                                  setColumnName('ID');
+                                }
+
+                                return newState;
+                              });
+
                               setColumnName((prevState) => {
                                 if (prevState !== column.title) {
                                   setOrderingState(1);
                                 }
 
                                 return column.title;
-                              });
-
-                              setOrderingState((prevState) => {
-                                let newState = prevState + 1;
-
-                                if (newState === 3) {
-                                  newState = 0;
-                                }
-
-                                return newState;
                               });
                             }}
                           >
