@@ -19,17 +19,35 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-const filteredUser = (products) => {
-  products.filter
-}
+/* function checkFilter(condition, selectedUserId) {
+  return user.id === selectedUserId;
+} */
 
 export const App = () => {
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [filteredProducts, setfilteredProducts] = useState(products);
+  const [filterInput, setfilterInput] = useState('');
+
+  const filteredProductsByUser = (selectedUserId) => {
+    products.filter(product => {
+    const {
+      user
+    } = product;
+
+    return user.id === selectedUserId;
+  })};
+
+  const filteredProductsByInput = () => {
+    products.filter()
+  };
 
   const showAllUsers = () => {
-    
-  }
+    setfilteredProducts(products);
+  };
+
+  const handleFilterInput = (event) => {
+    setfilterInput(event.target.value);
+  };
 
   return (
     <div className="section">
@@ -59,6 +77,7 @@ export const App = () => {
                 const handleClick = (isUserActive) => {
                   if (!isUserActive) {
                     setSelectedUserId(id);
+                    setfilteredProducts(filteredProductsByUser(id));
                   }
                 }
 
@@ -85,7 +104,9 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  name="filterInput"
+                  value={filterInput}
+                  onChange={handleFilterInput}
                 />
 
                 <span className="icon is-left">
@@ -217,7 +238,7 @@ export const App = () => {
               </tr>
             </thead>
 
-            <ProductsList products={products} />
+            <ProductsList products={filteredProducts} />
           </table>
         </div>
       </div>
