@@ -23,24 +23,38 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-const getReorderedProducts = (selectedUser) => {
-  if (selectedUser === 'all') {
-    return products;
-  }
-
-  return products.filter(
-    product => product.user.id === selectedUser.id,
+const getReorderedProducts = (selectedUser, searchInput) => {
+  const lowerCasedSearchInput = searchInput.trim().toLowerCase();
+  const searchProducts = products.filter(
+    product => product.name.toLowerCase().includes(lowerCasedSearchInput),
   );
+
+  return selectedUser !== 'all'
+    ? searchProducts.filter(
+      product => product.user.id === selectedUser.id,
+    )
+    : searchProducts;
 };
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState('all');
+  const [searchInput, setSearchInput] = useState('');
 
   const handleSelectedUserChange = (user) => {
     setSelectedUser(user);
   };
 
-  const reorderedProducts = getReorderedProducts(selectedUser);
+  const handleSearchInputChange = (event) => {
+    const { value } = event.target;
+
+    setSearchInput(value);
+  };
+
+  const handleDeleteButton = () => {
+    setSearchInput('');
+  };
+
+  const reorderedProducts = getReorderedProducts(selectedUser, searchInput);
 
   return (
     <div className="section">
@@ -84,7 +98,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={searchInput}
+                  onChange={handleSearchInputChange}
                 />
 
                 <span className="icon is-left">
@@ -93,11 +108,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {searchInput && (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={handleDeleteButton}
+                    />
+                  )}
                 </span>
               </p>
             </div>
