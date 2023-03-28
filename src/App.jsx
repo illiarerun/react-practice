@@ -54,6 +54,11 @@ export const App = () => {
     setSearchInput('');
   };
 
+  const handleFiltersReset = () => {
+    setSelectedUser('all');
+    setSearchInput('');
+  };
+
   const reorderedProducts = getReorderedProducts(selectedUser, searchInput);
 
   return (
@@ -166,6 +171,7 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={handleFiltersReset}
               >
                 Reset all filters
               </a>
