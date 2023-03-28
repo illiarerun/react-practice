@@ -19,26 +19,29 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-/* function checkFilter(condition, selectedUserId) {
-  return user.id === selectedUserId;
-} */
+function checkFilter(user, selectedUserId, filterInput) {
+  return filterInput
+    ? user.toLowerCase()
+      .includes(filterInput.toLowerCase().trim())
+    : user.id === selectedUserId;
+}
 
 export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [filteredProducts, setfilteredProducts] = useState(products);
   const [filterInput, setfilterInput] = useState('');
 
-  const filteredProductsByUser = (selectedUserId) => {
+  const filteredProductsByUser = (selectedUserId, filterInput) => {
     products.filter(product => {
     const {
-      user
+      user,
     } = product;
 
-    return user.id === selectedUserId;
+    return checkFilter(user, selectedUserId, filterInput);
   })};
 
   const filteredProductsByInput = () => {
-    products.filter()
+    products.filter((pro))
   };
 
   const showAllUsers = () => {
@@ -47,6 +50,7 @@ export const App = () => {
 
   const handleFilterInput = (event) => {
     setfilterInput(event.target.value);
+    setfilteredProducts(filteredProductsByInput);
   };
 
   return (
