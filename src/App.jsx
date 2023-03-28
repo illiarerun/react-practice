@@ -20,31 +20,47 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-// const getSortedProducts = (
-//   products,
-//   sortType,
-//   isReversed,
-// ) => {
-//   const sortedProducts = products.sort((prev, next) => {
+const getSortedProducts = (
+  filteredProducts,
+  sortType,
+  isReversed,
+) => {
+  const sortedProducts = filteredProducts.sort((prev, next) => {
+    switch (sortType) {
+      case '':
+        return 0;
 
-//   });
-// };
+      case 'id':
+        return prev.id - next.id;
+
+      case 'product':
+        return prev.name.localeCompare(next.name);
+
+      case 'category':
+        return prev.category.title.localeCompare(next.category.title);
+
+      case 'user':
+        return prev.user.name.localeCompare(next.user.name);
+
+      default:
+        throw new Error(`Unknown sort type - ${sortType}`);
+    }
+  });
+
+  return isReversed
+    ? sortedProducts.reverse()
+    : sortedProducts;
+};
 
 export const App = () => {
   const [selectedOwner, setSelectedOwners] = useState('');
   const [query, setQuery] = useState('');
   const [catSelected, setCatSelected] = useState([]);
-  // const [isSorted, setIsSorted] = useState(false);
-  // const [sortBy, setSortBy] = useState('');
+  const [isReversed, setIsReversed] = useState(false);
+  const [sortBy, setSortBy] = useState('');
 
   const handleSelectAll = () => {
-    const allCategId = categoriesFromServer.map(categ => categ.id);
-
-    if (catSelected.length === allCategId.length) {
-      setCatSelected([]);
-    } else {
-      setCatSelected(allCategId);
-    }
+    setCatSelected([]);
   };
 
   const handleCategory = (catId) => {
@@ -96,6 +112,9 @@ export const App = () => {
   });
 
   const showTheTable = Boolean(filteredByName.length);
+
+  const sortedProdutsList
+    = getSortedProducts(filteredByName, sortBy, isReversed);
 
   return (
     <div className="section">
@@ -250,10 +269,34 @@ export const App = () => {
 
                       <a
                         href="#/"
-                        // onClick={setSortBy('id')}
+                        onClick={() => {
+                          if (sortBy !== 'id') {
+                            setSortBy('id');
+                            setIsReversed(false);
+                          }
+
+                          if (sortBy === 'id' && !isReversed) {
+                            setIsReversed(true);
+                          }
+
+                          if (sortBy === 'id' && isReversed) {
+                            setSortBy('');
+                            setIsReversed(false);
+                          }
+                        }}
                       >
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
+                          <i
+                            data-cy="SortIcon"
+                            className={classNames(
+                              'fas',
+                              {
+                                'fa-sort': sortBy !== 'id',
+                                'fa-sort-up': sortBy === 'id' && !isReversed,
+                                'fa-sort-down': sortBy === 'id' && isReversed,
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -263,9 +306,40 @@ export const App = () => {
                     <span className="is-flex is-flex-wrap-nowrap">
                       Product
 
-                      <a href="#/">
+                      <a
+                        href="#/"
+                        onClick={() => {
+                          if (sortBy !== 'product') {
+                            setSortBy('product');
+                            setIsReversed(false);
+                          }
+
+                          if (sortBy === 'product' && !isReversed) {
+                            setIsReversed(true);
+                          }
+
+                          if (sortBy === 'product' && isReversed) {
+                            setSortBy('');
+                            setIsReversed(false);
+                          }
+                        }}
+                      >
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-down" />
+                          <i
+                            data-cy="SortIcon"
+                            className={classNames(
+                              'fas',
+                              {
+                                'fa-sort': sortBy !== 'product',
+                                'fa-sort-up': (
+                                  sortBy === 'product' && !isReversed
+                                ),
+                                'fa-sort-down': (
+                                  sortBy === 'product' && isReversed
+                                ),
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -275,9 +349,40 @@ export const App = () => {
                     <span className="is-flex is-flex-wrap-nowrap">
                       Category
 
-                      <a href="#/">
+                      <a
+                        href="#/"
+                        onClick={() => {
+                          if (sortBy !== 'category') {
+                            setSortBy('category');
+                            setIsReversed(false);
+                          }
+
+                          if (sortBy === 'category' && !isReversed) {
+                            setIsReversed(true);
+                          }
+
+                          if (sortBy === 'category' && isReversed) {
+                            setSortBy('');
+                            setIsReversed(false);
+                          }
+                        }}
+                      >
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-up" />
+                          <i
+                            data-cy="SortIcon"
+                            className={classNames(
+                              'fas',
+                              {
+                                'fa-sort': sortBy !== 'product',
+                                'fa-sort-up': (
+                                  sortBy === 'category' && !isReversed
+                                ),
+                                'fa-sort-down': (
+                                  sortBy === 'category' && isReversed
+                                ),
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -287,9 +392,38 @@ export const App = () => {
                     <span className="is-flex is-flex-wrap-nowrap">
                       User
 
-                      <a href="#/">
+                      <a
+                        href="#/"
+                        onClick={() => {
+                          if (sortBy !== 'user') {
+                            setSortBy('user');
+                            setIsReversed(false);
+                          }
+
+                          if (sortBy === 'user' && !isReversed) {
+                            setIsReversed(true);
+                          }
+
+                          if (sortBy === 'user' && isReversed) {
+                            setSortBy('');
+                            setIsReversed(false);
+                          }
+                        }}
+                      >
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
+                          <i
+                            data-cy="SortIcon"
+                            className={classNames(
+                              'fas',
+                              {
+                                'fa-sort': sortBy !== 'user',
+                                'fa-sort-up': sortBy === 'user' && !isReversed,
+                                'fa-sort-down': (
+                                  sortBy === 'user' && isReversed
+                                ),
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -298,7 +432,7 @@ export const App = () => {
               </thead>
 
               <tbody>
-                {filteredByName.map((product) => {
+                {sortedProdutsList.map((product) => {
                   const {
                     id,
                     name,
