@@ -31,22 +31,23 @@ export const App = () => {
   const [currentUserId, setCurrentUserId] = useState(0);
   const [inputSearch, setInputSearch] = useState('');
 
-  const handleFilterByUser = (userId) => {
-    const filtered = products
-      .filter(product => product.category.ownerId === userId
-        && (product.name.includes(inputSearch.toLowerCase())
-        || product.name.includes(inputSearch.toUpperCase())));
-
-    setCurrentProducts(filtered);
-  };
-
   // const handleFilterByInput = () => {
-  //   const filtered = currentProducts.filter(product => product.name
+  //   const filtered = products.filter(product => product.name
   //     .includes(inputSearch.toLowerCase())
   //   || product.name.includes(inputSearch.toUpperCase()));
 
   //   setCurrentProducts(filtered);
   // };
+
+  const handleFilterByUser = (userId) => {
+    const filtered = products
+      .filter(product => (product.category.ownerId === userId)
+      && (product.name.toLowerCase().includes(inputSearch.trim().toLowerCase())
+      || product.name.toUpperCase().includes(inputSearch.trim().toUpperCase())
+      ));
+
+    setCurrentProducts(filtered);
+  };
 
   return (
     <div className="section">
@@ -98,7 +99,6 @@ export const App = () => {
                   value={inputSearch}
                   onChange={(event) => {
                     setInputSearch(event.target.value);
-                    handleFilterByUser(currentUserId);
                   }}
                 />
 
