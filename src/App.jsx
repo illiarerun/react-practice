@@ -24,6 +24,8 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState(0);
   const [filterValue, setFilterValue] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [sortStyle, setSortStyle] = useState('none');
+  const [isReversed, setIsReversed] = useState(false);
 
   useEffect(() => {
     let result = [...products];
@@ -47,8 +49,31 @@ export const App = () => {
       });
     }
 
+    result.sort((prev, next) => {
+      switch (sortStyle) {
+        case 'id':
+          return prev.id - next.id;
+
+        case 'productName':
+          return prev.name.localeCompare(next.name);
+
+        case 'categoryTitle':
+          return prev.category.title.localeCompare(next.category.title);
+
+        case 'userName':
+          return prev.user.name.localeCompare(next.user.name);
+
+        default:
+          return 0;
+      }
+    });
+
+    if (isReversed) {
+      result.reverse();
+    }
+
     setVisibleProducts(result);
-  }, [selectedUser, filterValue, selectedCategories]);
+  }, [selectedUser, filterValue, selectedCategories, sortStyle, isReversed]);
 
   const handleFilter = (event) => {
     setFilterValue(event.target.value);
@@ -68,6 +93,14 @@ export const App = () => {
     setSelectedCategories([]);
   };
 
+  const handleSortClick = (title) => {
+    if (sortStyle === title) {
+      setIsReversed(prev => !prev);
+    }
+
+    setSortStyle(title);
+  };
+
   const handleCategorySelect = (title) => {
     if (selectedCategories.includes(title)) {
       setSelectedCategories(prevSelectedCategories => (
@@ -79,6 +112,16 @@ export const App = () => {
         title,
       ]));
     }
+  };
+
+  const getSortClass = (title) => {
+    if (title === sortStyle) {
+      return isReversed
+        ? 'fa-sort-up'
+        : 'fa-sort-down';
+    }
+
+    return 'fa-sort';
   };
 
   return (
@@ -203,9 +246,20 @@ export const App = () => {
                       <span className="is-flex is-flex-wrap-nowrap">
                         ID
 
-                        <a href="#/">
+                        <a
+                          href="#/"
+                          onClick={() => {
+                            handleSortClick('id');
+                          }}
+                        >
                           <span className="icon">
-                            <i data-cy="SortIcon" className="fas fa-sort" />
+                            <i
+                              data-cy="SortIcon"
+                              className={classNames(
+                                'fas',
+                                getSortClass('id'),
+                              )}
+                            />
                           </span>
                         </a>
                       </span>
@@ -215,11 +269,19 @@ export const App = () => {
                       <span className="is-flex is-flex-wrap-nowrap">
                         Product
 
-                        <a href="#/">
+                        <a
+                          href="#/"
+                          onClick={() => {
+                            handleSortClick('productName');
+                          }}
+                        >
                           <span className="icon">
                             <i
                               data-cy="SortIcon"
-                              className="fas fa-sort-down"
+                              className={classNames(
+                                'fas',
+                                getSortClass('productName'),
+                              )}
                             />
                           </span>
                         </a>
@@ -230,9 +292,20 @@ export const App = () => {
                       <span className="is-flex is-flex-wrap-nowrap">
                         Category
 
-                        <a href="#/">
+                        <a
+                          href="#/"
+                          onClick={() => {
+                            handleSortClick('categoryTitle');
+                          }}
+                        >
                           <span className="icon">
-                            <i data-cy="SortIcon" className="fas fa-sort-up" />
+                            <i
+                              data-cy="SortIcon"
+                              className={classNames(
+                                'fas',
+                                getSortClass('categoryTitle'),
+                              )}
+                            />
                           </span>
                         </a>
                       </span>
@@ -242,9 +315,20 @@ export const App = () => {
                       <span className="is-flex is-flex-wrap-nowrap">
                         User
 
-                        <a href="#/">
+                        <a
+                          href="#/"
+                          onClick={() => {
+                            handleSortClick('userName');
+                          }}
+                        >
                           <span className="icon">
-                            <i data-cy="SortIcon" className="fas fa-sort" />
+                            <i
+                              data-cy="SortIcon"
+                              className={classNames(
+                                'fas',
+                                getSortClass('userName'),
+                              )}
+                            />
                           </span>
                         </a>
                       </span>
