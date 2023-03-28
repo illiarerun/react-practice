@@ -67,6 +67,16 @@ export const App = () => {
     return `${catObj.icon} - ${catObj.title}`;
   };
 
+  const getOwnerNameSexByCategoryId = (ID) => {
+    const catObj = categoriesFromServer
+      .find(category => category.id === ID);
+
+    const owner = usersFromServer
+      .find(user => user.id === catObj.ownerId);
+
+    return [owner.name, owner.sex];
+  };
+
   return (
     <div className="section">
       <div className="container">
@@ -242,44 +252,16 @@ export const App = () => {
 
                       <td
                         data-cy="ProductUser"
-                        className="has-text-link"
+                        className={
+                          `${getOwnerNameSexByCategoryId(product.categoryId)[1] === 'm'
+                            ? 'has-text-link'
+                            : 'has-text-danger'}`
+                        }
                       >
-                        Max
+                        {getOwnerNameSexByCategoryId(product.categoryId)[0]}
                       </td>
                     </tr>
                   ))}
-
-                  <tr data-cy="Product">
-                    <td className="has-text-weight-bold" data-cy="ProductId">
-                      2
-                    </td>
-
-                    <td data-cy="ProductName">Bread</td>
-                    {/* <td data-cy="ProductCategory">🍞 - Grocery</td> */}
-
-                    <td
-                      data-cy="ProductUser"
-                      className="has-text-danger"
-                    >
-                      Anna
-                    </td>
-                  </tr>
-
-                  <tr data-cy="Product">
-                    <td className="has-text-weight-bold" data-cy="ProductId">
-                      3
-                    </td>
-
-                    <td data-cy="ProductName">iPhone</td>
-                    {/* <td data-cy="ProductCategory">💻 - Electronics</td> */}
-
-                    <td
-                      data-cy="ProductUser"
-                      className="has-text-link"
-                    >
-                      Roma
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             )
