@@ -20,9 +20,18 @@ const products = productsFromServer.map((product) => {
   };
 });
 
+const getVisibleProductsAfterInput = (visibleProducts, input) => (
+  visibleProducts.filter(product => (
+    product.name.toLowerCase().includes(input.toLowerCase())
+  ))
+);
+
 export const App = () => {
   const [visibleProducts, setVisibleProducts] = useState(products);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [inputValue, setInputValue] = useState('');
+  const visibleProductsAfterInput
+   = getVisibleProductsAfterInput(visibleProducts, inputValue);
 
   const handlerFilterBySelectedUser = (selectUser) => {
     setSelectedUser(selectUser);
@@ -40,6 +49,10 @@ export const App = () => {
         });
 
     setVisibleProducts(filteredVisibleProducts);
+  };
+
+  const handlerFilterByInput = (event) => {
+    setInputValue(event.target.value);
   };
 
   return (
@@ -82,21 +95,25 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={inputValue}
+                  onChange={handlerFilterByInput}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {inputValue
+                  && (
+                  <span className="icon is-right">
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setInputValue('')}
+                    />
+                  </span>
+                  )}
               </p>
             </div>
 
@@ -215,7 +232,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {visibleProducts.map((product) => {
+              {visibleProductsAfterInput.map((product) => {
                 const { id, name, category, user } = product;
 
                 return (
