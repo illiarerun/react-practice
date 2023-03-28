@@ -23,11 +23,23 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-const getReorderedProducts = (selectedUser, searchInput) => {
+const getReorderedProducts = (
+  selectedUser,
+  searchInput,
+  selectedCategories,
+) => {
   const lowerCasedSearchInput = searchInput.trim().toLowerCase();
-  const searchProducts = products.filter(
+  let searchProducts = products.filter(
     product => product.name.toLowerCase().includes(lowerCasedSearchInput),
   );
+
+  if (selectedCategories.length > 0) {
+    searchProducts = searchProducts.filter(product => (
+      selectedCategories.some(
+        category => category.title === product.category.title,
+      )
+    ));
+  }
 
   return selectedUser !== 'all'
     ? searchProducts.filter(
@@ -39,6 +51,10 @@ const getReorderedProducts = (selectedUser, searchInput) => {
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState('all');
   const [searchInput, setSearchInput] = useState('');
+  const [
+    selectedCategories,
+    setSelectedCategories,
+  ] = useState([]);
 
   const handleSelectedUserChange = (user) => {
     setSelectedUser(user);
@@ -57,9 +73,31 @@ export const App = () => {
   const handleFiltersReset = () => {
     setSelectedUser('all');
     setSearchInput('');
+    setSelectedCategories([]);
   };
 
-  const reorderedProducts = getReorderedProducts(selectedUser, searchInput);
+  const handleCategorySelect = (category) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        return prev.filter(cat => cat.id !== category.id);
+      }
+
+      return [
+        ...prev,
+        category,
+      ];
+    });
+  };
+
+  const handleCategoriesReset = () => {
+    setSelectedCategories([]);
+  };
+
+  const reorderedProducts = getReorderedProducts(
+    selectedUser,
+    searchInput,
+    selectedCategories,
+  );
 
   return (
     <div className="section">
@@ -129,41 +167,36 @@ export const App = () => {
               <a
                 href="#/"
                 data-cy="AllCategories"
-                className="button is-success mr-6 is-outlined"
+                className={classNames(
+                  'button',
+                  'is-success',
+                  'mr-6',
+                  {
+                    'is-outlined': selectedCategories.length !== 0,
+                  },
+                )}
+                onClick={handleCategoriesReset}
               >
                 All
               </a>
 
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 1
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Category 2
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 3
-              </a>
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Category 4
-              </a>
+              {categoriesFromServer.map(category => (
+                <a
+                  data-cy="Category"
+                  href="#/"
+                  onClick={() => handleCategorySelect(category)}
+                  className={classNames(
+                    'button',
+                    'mr-2',
+                    'my-1',
+                    {
+                      'is-info': selectedCategories.includes(category),
+                    },
+                  )}
+                >
+                  {category.title}
+                </a>
+              ))}
             </div>
 
             <div className="panel-block">
@@ -180,106 +213,113 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
-          {reorderedProducts.length === 0 && (
-            <p data-cy="NoMatchingMessage">
-              No products matching selected criteria
-            </p>
-          )}
+          {reorderedProducts.length === 0
+            ? (
+              <p data-cy="NoMatchingMessage">
+                No products matching selected criteria
+              </p>
+            )
+            : (
+              <table
+                data-cy="ProductTable"
+                className="table is-striped is-narrow is-fullwidth"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        ID
 
-          <table
-            data-cy="ProductTable"
-            className="table is-striped is-narrow is-fullwidth"
-          >
-            {reorderedProducts.length > 0 && (
-              <thead>
-                <tr>
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      ID
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort" />
+                          </span>
+                        </a>
+                      </span>
+                    </th>
 
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        Product
 
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      Product
+                        <a href="#/">
+                          <span className="icon">
+                            <i
+                              data-cy="SortIcon"
+                              className="fas fa-sort-down"
+                            />
+                          </span>
+                        </a>
+                      </span>
+                    </th>
 
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-down" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        Category
 
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      Category
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort-up" />
+                          </span>
+                        </a>
+                      </span>
+                    </th>
 
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-up" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        User
 
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      User
-
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-            )}
-
-            <tbody>
-              {reorderedProducts.map((product) => {
-                const {
-                  name,
-                  id,
-                  category,
-                  user,
-                } = product;
-                const isMale = user.sex === 'm';
-                const isFemale = user.sex === 'f';
-
-                return (
-                  <tr key={id} data-cy="Product">
-                    <td className="has-text-weight-bold" data-cy="ProductId">
-                      {id}
-                    </td>
-
-                    <td data-cy="ProductName">{name}</td>
-                    <td data-cy="ProductCategory">
-                      {`${category.icon} - ${category.title}`}
-                    </td>
-
-                    <td
-                      data-cy="ProductUser"
-                      className={classNames({
-                        'has-text-link': isMale,
-                        'has-text-danger': isFemale,
-                      })}
-                    >
-                      {user.name}
-                    </td>
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort" />
+                          </span>
+                        </a>
+                      </span>
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                </thead>
+
+                <tbody>
+                  {reorderedProducts.map((product) => {
+                    const {
+                      name,
+                      id,
+                      category,
+                      user,
+                    } = product;
+                    const isMale = user.sex === 'm';
+                    const isFemale = user.sex === 'f';
+
+                    return (
+                      <tr key={id} data-cy="Product">
+                        <td
+                          className="has-text-weight-bold"
+                          data-cy="ProductId"
+                        >
+                          {id}
+                        </td>
+
+                        <td data-cy="ProductName">{name}</td>
+                        <td data-cy="ProductCategory">
+                          {`${category.icon} - ${category.title}`}
+                        </td>
+
+                        <td
+                          data-cy="ProductUser"
+                          className={classNames({
+                            'has-text-link': isMale,
+                            'has-text-danger': isFemale,
+                          })}
+                        >
+                          {user.name}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )
+          }
         </div>
       </div>
     </div>
