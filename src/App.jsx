@@ -1,16 +1,25 @@
 import React from 'react';
 import './App.scss';
+// import classNames from 'classnames';
 
-// import usersFromServer from './api/users';
-// import categoriesFromServer from './api/categories';
-// import productsFromServer from './api/products';
+import usersFromServer from './api/users';
+import categoriesFromServer from './api/categories';
+import productsFromServer from './api/products';
 
-// const products = productsFromServer.map((product) => {
-//   const category = null; // find by product.categoryId
-//   const user = null; // find by category.ownerId
+const products = productsFromServer.map((product) => {
+  const category = categoriesFromServer.filter(
+    id => id === product.categoryId,
+  ); // find by product.categoryId
+  const user = usersFromServer.filter(
+    id => id === category.ownerId,
+  ); // find by category.ownerId
 
-//   return null;
-// });
+  return {
+    ...product,
+    category,
+    user,
+  } || null;
+});
 
 export const App = () => (
   <div className="section">
@@ -140,11 +149,13 @@ export const App = () => (
           className="table is-striped is-narrow is-fullwidth"
         >
           <thead>
+
             <tr>
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
-                  ID
-
+                  {products.map(product => (
+                    product.id
+                  ))}
                   <a href="#/">
                     <span className="icon">
                       <i data-cy="SortIcon" className="fas fa-sort" />
@@ -155,7 +166,9 @@ export const App = () => (
 
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
-                  Product
+                  {products.map(product => (
+                    product.name
+                  ))}
 
                   <a href="#/">
                     <span className="icon">
@@ -167,7 +180,9 @@ export const App = () => (
 
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
-                  Category
+                  {products.map(product => (
+                    product.categoryId
+                  ))}
 
                   <a href="#/">
                     <span className="icon">
@@ -179,7 +194,9 @@ export const App = () => (
 
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
-                  User
+                  {products.map(user => (
+                    user.name
+                  ))}
 
                   <a href="#/">
                     <span className="icon">
@@ -198,7 +215,13 @@ export const App = () => (
               </td>
 
               <td data-cy="ProductName">Milk</td>
-              <td data-cy="ProductCategory">🍺 - Drinks</td>
+              <td data-cy="ProductCategory">
+                <span>
+                  <img src="" alt="" />
+                  🍺
+                </span>
+                - Drinks
+              </td>
 
               <td
                 data-cy="ProductUser"
@@ -214,7 +237,13 @@ export const App = () => (
               </td>
 
               <td data-cy="ProductName">Bread</td>
-              <td data-cy="ProductCategory">🍞 - Grocery</td>
+              <td data-cy="ProductCategory">
+                <span>
+                  <img src="" alt="" />
+                  🍞
+                </span>
+                - Grocery
+              </td>
 
               <td
                 data-cy="ProductUser"
@@ -230,7 +259,13 @@ export const App = () => (
               </td>
 
               <td data-cy="ProductName">iPhone</td>
-              <td data-cy="ProductCategory">💻 - Electronics</td>
+              <td data-cy="ProductCategory">
+                <span>
+                  <img src="" alt="" />
+                  💻
+                </span>
+                - Electronics
+              </td>
 
               <td
                 data-cy="ProductUser"
