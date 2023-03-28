@@ -28,7 +28,7 @@ export const ProductsList = ({ products }) => (
               'has-text-danger': user.sex === 'f',
             })}
           >
-            {user}
+            {user.name}
           </td>
         </tr>
       );

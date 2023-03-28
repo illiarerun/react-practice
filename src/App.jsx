@@ -19,36 +19,28 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-function checkFilter(user, userId, inputFilter) {
-  return inputFilter
-    ? user.toLowerCase()
-      .includes(inputFilter.toLowerCase().trim())
-    : user.id === userId;
+function filterProducts(products, selectedUser, query) {
+  let filtered = [...products];
+
+  if (selectedUser !== 'all') {
+    filtered = filtered.filter(({ id }) => id === selectedUser.id);
+  }
+
+  return filtered.filter(({ name }) => {
+    return name.toLowerCase()
+      .includes(query.toLowerCase().trim());
+  })
 }
 
 export const App = () => {
-  const [selectedUserId, setSelectedUserId] = useState(0);
-  const [filteredProducts, setfilteredProducts] = useState(products);
-  const [filterInput, setfilterInput] = useState('');
+  const [selectedUser, setSelectedUser] = useState('all');
+  const [query, setQuery] = useState('');
 
-  const filteredProductsByUser = () => {
-    products.filter((product) => {
-      const {
-        user,
-      } = product;
-
-      return checkFilter(user, selectedUserId, filterInput);
-    });
-  };
-
-  const showAllUsers = () => {
-    setfilteredProducts(products);
-  };
-
-  const handleFilterInput = (event) => {
-    setfilterInput(event.target.value);
-    setfilteredProducts(filteredProductsByUser);
-  };
+  const filteredProducts = filterProducts(
+    products,
+    selectedUser,
+    query
+  );
 
   return (
     <div className="section">
@@ -63,7 +55,7 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
-                onClick={showAllUsers}
+                onClick={setSelectedUser('all')}
               >
                 All
               </a>
@@ -73,14 +65,7 @@ export const App = () => {
                   id,
                   name,
                 } = user;
-                const isUserActive = id === selectedUserId;
-
-                const handleClick = (activeStatus) => {
-                  if (!activeStatus) {
-                    setSelectedUserId(id);
-                    setfilteredProducts(filteredProductsByUser(id));
-                  }
-                };
+                const isUserActive = id === selectedUser.id;
 
                 return (
                   <a
@@ -90,7 +75,7 @@ export const App = () => {
                     className={classNames({
                       'is-active': isUserActive,
                     })}
-                    onClick={() => handleClick(isUserActive)}
+                    onClick={() => setSelectedUser(user)}
                   >
                     {name}
                   </a>
@@ -105,9 +90,9 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  name="filterInput"
-                  value={filterInput}
-                  onChange={handleFilterInput}
+                  name="query"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
@@ -116,11 +101,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {query && (
+                      <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQuery('')}
+                    />
+                  )}
                 </span>
               </p>
             </div>
