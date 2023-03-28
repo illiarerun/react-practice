@@ -200,7 +200,7 @@ export const App = () => (
           <tbody>
 
             {products.map(({ id, name, category, user }) => (
-              <tr data-cy="Product">
+              <tr key={id} data-cy="Product">
                 <td className="has-text-weight-bold" data-cy="ProductId">
                   {id}
                 </td>
