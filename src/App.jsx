@@ -108,15 +108,20 @@ export const App = () => {
                 All
               </a>
               {categoriesFromServer.map((category) => {
-                const { name } = category;
+                const { title, id } = category;
 
                 return (
                   <a
                     data-cy="Category"
-                    className="button mr-2 my-1 is-info"
+                    className={classNames(
+                      'button',
+                      'mr-2',
+                      'mr-1',
+                      { 'is-info': selectedCategories.includes(id) },
+                    )}
                     href="#/"
                   >
-                    {name}
+                    {title}
                   </a>
                 );
               })}
