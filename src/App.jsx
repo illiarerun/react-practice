@@ -19,11 +19,11 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-function checkFilter(user, selectedUserId, filterInput) {
-  return filterInput
+function checkFilter(user, userId, inputFilter) {
+  return inputFilter
     ? user.toLowerCase()
-      .includes(filterInput.toLowerCase().trim())
-    : user.id === selectedUserId;
+      .includes(inputFilter.toLowerCase().trim())
+    : user.id === userId;
 }
 
 export const App = () => {
@@ -31,14 +31,15 @@ export const App = () => {
   const [filteredProducts, setfilteredProducts] = useState(products);
   const [filterInput, setfilterInput] = useState('');
 
-  const filteredProductsByUser = (selectedUserId, filterInput) => {
-    products.filter(product => {
-    const {
-      user,
-    } = product;
+  const filteredProductsByUser = () => {
+    products.filter((product) => {
+      const {
+        user,
+      } = product;
 
-    return checkFilter(user, selectedUserId, filterInput);
-  })};
+      return checkFilter(user, selectedUserId, filterInput);
+    });
+  };
 
   const showAllUsers = () => {
     setfilteredProducts(products);
@@ -74,12 +75,12 @@ export const App = () => {
                 } = user;
                 const isUserActive = id === selectedUserId;
 
-                const handleClick = (isUserActive) => {
-                  if (!isUserActive) {
+                const handleClick = (activeStatus) => {
+                  if (!activeStatus) {
                     setSelectedUserId(id);
                     setfilteredProducts(filteredProductsByUser(id));
                   }
-                }
+                };
 
                 return (
                   <a
@@ -93,7 +94,7 @@ export const App = () => {
                   >
                     {name}
                   </a>
-                )
+                );
               })}
             </p>
 
@@ -243,5 +244,5 @@ export const App = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
