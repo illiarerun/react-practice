@@ -22,21 +22,36 @@ const products = productsFromServer.map((product) => {
   };
 });
 
-const filteredProducts = (filterByUser) => {
-  if (filterByUser === 'All') {
-    return products;
-  }
+const filteredProducts = (filterByUser, searchInput) => {
+  const toLowerCaseSearchInput = searchInput.trim().toLowerCase();
 
-  return products.filter(product => product.user.id === filterByUser.id);
+  const searchProducts = products.filter(
+    product => product.name.toLowerCase().includes(toLowerCaseSearchInput),
+  );
+
+  return filterByUser !== 'All'
+    ? searchProducts.filter(product => product.user.id === filterByUser.id)
+    : searchProducts;
 };
 
 export const App = () => {
   const [filterByUser, setFilterByUser] = useState('All');
+  const [searchInput, setSearchInput] = useState('');
 
-  const reorderedProducts = filteredProducts(filterByUser);
+  const reorderedProducts = filteredProducts(filterByUser, searchInput);
 
   const handleSetFilter = (user) => {
     setFilterByUser(user);
+  };
+
+  const handleSetSearchInput = (event) => {
+    const { value } = event.target;
+
+    setSearchInput(value);
+  };
+
+  const handleDeleteSearch = () => {
+    setSearchInput('');
   };
 
   return (
@@ -82,7 +97,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={searchInput}
+                  onChange={handleSetSearchInput}
                 />
 
                 <span className="icon is-left">
@@ -91,11 +107,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {searchInput && (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={handleDeleteSearch}
+                    />
+                  )}
                 </span>
               </p>
             </div>
