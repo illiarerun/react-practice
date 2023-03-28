@@ -107,44 +107,19 @@ export const App = () => {
               >
                 All
               </a>
+              {categoriesFromServer.map((category) => {
+                const { name } = category;
 
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Grocery
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Drinks
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Fruits
-              </a>
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Electronics
-              </a>
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1"
-                href="#/"
-              >
-                Clothes
-              </a>
+                return (
+                  <a
+                    data-cy="Category"
+                    className="button mr-2 my-1 is-info"
+                    href="#/"
+                  >
+                    {name}
+                  </a>
+                );
+              })}
             </div>
 
             <div className="panel-block">
