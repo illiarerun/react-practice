@@ -45,6 +45,7 @@ export const ProductList = ({ products }) => (
 export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [visibleProducts, setVisibleProducts] = useState(productsCombined);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     if (selectedUserId !== 0) {
@@ -55,7 +56,20 @@ export const App = () => {
     } else {
       setVisibleProducts(productsCombined);
     }
-  }, [selectedUserId]);
+
+    if (query.length !== 0) {
+      setVisibleProducts(() => {
+        const normalisedQuery = query.toLowerCase();
+
+        return (visibleProducts
+          .filter(product => (
+            product.name.toLowerCase().includes(normalisedQuery)
+          )));
+      });
+    }
+  }, [selectedUserId, query]);
+
+
 
   return (
     <div className="section">
@@ -81,7 +95,8 @@ export const App = () => {
                   data-cy="FilterUser"
                   href="#/"
                   className={classNames(
-                    'is-active' && selectedUserId === user.id)}
+                    'is-active' && selectedUserId === user.id,
+                  )}
                   onClick={() => setSelectedUserId(user.id)}
                 >
                   {user.name}
@@ -96,7 +111,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
