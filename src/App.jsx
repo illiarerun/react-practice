@@ -23,6 +23,22 @@ const products = productsFromServer.map((product) => {
 export const App = () => {
   /* eslint-disable-next-line */
   const [activeUserId, setActiveUserId] = useState(0);
+  /* eslint-disable-next-line */
+  const [query, setQuery] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  /* eslint-disable-next-line */
+  const handleCategorySelect = (id) => {
+    const isSelected = selectedCategories.includes(id);
+    const updatedSelectedCategoriesIds = isSelected
+      ? selectedCategories.filter(selectedId => selectedId !== id)
+      : [
+        ...selectedCategories,
+        id,
+      ];
+
+    setSelectedCategories(updatedSelectedCategoriesIds);
+  };
 
   return (
     <div className="section">
@@ -39,35 +55,23 @@ export const App = () => {
               >
                 All
               </a>
+              {usersFromServer.map((user) => {
+                const { id, name } = user;
 
-              <a
-                data-cy="FilterUser"
-                href="#/"
-              >
-                Roma
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-                className="is-active"
-              >
-                Anna
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-              >
-                Jhon
-              </a>
-
-              <a
-                data-cy="FilterUser"
-                href="#/"
-              >
-                Max
-              </a>
+                return (
+                  <a
+                    data-cy="FilterUser"
+                    className={classNames(
+                      { 'is-active': activeUserId === id },
+                    )}
+                    key={id}
+                    href="#/"
+                    onClick={() => setActiveUserId(id)}
+                  >
+                    {name}
+                  </a>
+                );
+              })}
             </p>
 
             <div className="panel-block">
