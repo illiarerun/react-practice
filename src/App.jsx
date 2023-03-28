@@ -160,6 +160,7 @@ export const App = () => {
                 <a
                   data-cy="FilterUser"
                   href="#/"
+                  key={id}
                   className={classNames({
                     'is-active': selectedUser === id,
                   })}
@@ -213,9 +214,10 @@ export const App = () => {
                 All
               </a>
 
-              {categoriesFromServer.map(({ title }) => (
+              {categoriesFromServer.map(({ id, title }) => (
                 <a
                   data-cy="Category"
+                  key={id}
                   className={classNames('button mr-2 my-1', {
                     'is-info': selectedCategories.includes(title),
                   })}
@@ -347,7 +349,7 @@ export const App = () => {
 
                 <tbody>
                   {visibleProducts.map(({ id, name, category, user }) => (
-                    <tr data-cy="Product">
+                    <tr data-cy="Product" key={id}>
                       <td className="has-text-weight-bold" data-cy="ProductId">
                         {id}
                       </td>
