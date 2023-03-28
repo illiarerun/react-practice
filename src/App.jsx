@@ -51,6 +51,7 @@ export const App = () => {
   };
 
   const handleDeleteSearch = () => {
+    setFilterByUser('All');
     setSearchInput('');
   };
 
