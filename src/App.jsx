@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
 import { Table } from './components/Table';
+import classNames from "classnames";
 
 const products = productsFromServer.map((product) => {
   const category = categoriesFromServer.find(
@@ -22,8 +23,18 @@ const products = productsFromServer.map((product) => {
 });
 
 export const App = () => {
-  // eslint-disable-next-line no-unused-vars
   const [visibleProducts, setVisibleProducts] = useState(products);
+  const [selectedUser, setSelectedUser] = useState('All');
+
+  useEffect(() => {
+    if (selectedUser !== 'All') {
+      setVisibleProducts(products.filter(
+        prod => prod.user.name === selectedUser,
+      ));
+    } else {
+      setVisibleProducts(products);
+    }
+  });
 
   return (
     <div className="section">
@@ -38,6 +49,10 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
+                className={classNames({
+                  'is-active': selectedUser === 'All',
+                })}
+                onClick={() => setSelectedUser('All')}
               >
                 All
               </a>
@@ -45,24 +60,36 @@ export const App = () => {
               <a
                 data-cy="FilterUser"
                 href="#/"
+                className={classNames({
+                  'is-active': selectedUser === 'Roma',
+                })}
+                onClick={() => setSelectedUser('Roma')}
               >
-                User 1
+                Roma
               </a>
 
               <a
                 data-cy="FilterUser"
                 href="#/"
-                className="is-active"
+                className={classNames({
+                  'is-active': selectedUser === 'Anna',
+                })}
+                onClick={() => setSelectedUser('Anna')}
               >
-                User 2
+                Anna
               </a>
 
               <a
                 data-cy="FilterUser"
                 href="#/"
+                className={classNames({
+                  'is-active': selectedUser === 'Max',
+                })}
+                onClick={() => setSelectedUser('Max')}
               >
-                User 3
+                Max
               </a>
+
             </p>
 
             <div className="panel-block">
