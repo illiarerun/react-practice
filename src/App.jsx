@@ -69,8 +69,6 @@ export const App = () => {
     }
   }, [selectedUserId, query]);
 
-
-
   return (
     <div className="section">
       <div className="container">
