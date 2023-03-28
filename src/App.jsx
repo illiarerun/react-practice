@@ -96,11 +96,18 @@ export const App = () => {
   };
 
   const handleSortClick = (title) => {
-    if (sortStyle === title) {
-      setIsReversed(prev => !prev);
-    }
-
     setSortStyle(title);
+
+    if (sortStyle === title) {
+      if (isReversed) {
+        setIsReversed(false);
+        setSortStyle('none');
+      } else {
+        setIsReversed(prev => !prev);
+      }
+    } else {
+      setIsReversed(false);
+    }
   };
 
   const handleCategorySelect = (title) => {
