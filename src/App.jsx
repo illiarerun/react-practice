@@ -22,6 +22,7 @@ const products = productsFromServer.map((product) => {
 export const App = () => {
   const [visibleProducts, setVisibleProducts] = useState(products);
   const [selectedUser, setSelectedUser] = useState(0);
+  const [filterValue, setFilterValue] = useState('');
 
   useEffect(() => {
     if (selectedUser !== 0) {
@@ -34,6 +35,25 @@ export const App = () => {
       setVisibleProducts(products);
     }
   }, [selectedUser]);
+
+  useEffect(() => {
+    setVisibleProducts(
+      products.filter(({ name }) => {
+        const lowercasedName = name.toLowerCase();
+        const lowercasedFilterValue = filterValue.toLowerCase().trim();
+
+        return lowercasedName.includes(lowercasedFilterValue);
+      }),
+    );
+  }, [filterValue]);
+
+  const handleFilter = (event) => {
+    setFilterValue(event.target.value);
+  };
+
+  const handleClearButtonClick = () => {
+    setFilterValue('');
+  };
 
   return (
     <div className="section">
@@ -81,7 +101,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={filterValue}
+                  onChange={handleFilter}
                 />
 
                 <span className="icon is-left">
@@ -90,11 +111,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {filterValue && (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={handleClearButtonClick}
+                    />
+                  )}
                 </span>
               </p>
             </div>
