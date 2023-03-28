@@ -25,27 +25,23 @@ export const App = () => {
   const [filterValue, setFilterValue] = useState('');
 
   useEffect(() => {
-    if (selectedUser !== 0) {
-      setVisibleProducts(
-        products.filter(({ user }) => (
-          user.id === selectedUser
-        )),
-      );
-    } else {
-      setVisibleProducts(products);
-    }
-  }, [selectedUser]);
+    let result = [...products];
 
-  useEffect(() => {
-    setVisibleProducts(
-      products.filter(({ name }) => {
+    if (selectedUser !== 0) {
+      result = result.filter(({ user: { id } }) => id === selectedUser);
+    }
+
+    if (filterValue !== '') {
+      result = result.filter(({ name }) => {
         const lowercasedName = name.toLowerCase();
         const lowercasedFilterValue = filterValue.toLowerCase().trim();
 
         return lowercasedName.includes(lowercasedFilterValue);
-      }),
-    );
-  }, [filterValue]);
+      });
+    }
+
+    setVisibleProducts(result);
+  }, [selectedUser, filterValue]);
 
   const handleFilter = (event) => {
     setFilterValue(event.target.value);
@@ -53,6 +49,11 @@ export const App = () => {
 
   const handleClearButtonClick = () => {
     setFilterValue('');
+  };
+
+  const handleResetAllFilters = () => {
+    setFilterValue('');
+    setSelectedUser(0);
   };
 
   return (
@@ -169,6 +170,7 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={handleResetAllFilters}
               >
                 Reset all filters
               </a>
@@ -177,88 +179,96 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
-          <p data-cy="NoMatchingMessage">
-            No products matching selected criteria
-          </p>
+          {visibleProducts.length
+            ? (
+              <table
+                data-cy="ProductTable"
+                className="table is-striped is-narrow is-fullwidth"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        ID
 
-          <table
-            data-cy="ProductTable"
-            className="table is-striped is-narrow is-fullwidth"
-          >
-            <thead>
-              <tr>
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    ID
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort" />
+                          </span>
+                        </a>
                       </span>
-                    </a>
-                  </span>
-                </th>
+                    </th>
 
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Product
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        Product
 
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-down" />
+                        <a href="#/">
+                          <span className="icon">
+                            <i
+                              data-cy="SortIcon"
+                              className="fas fa-sort-down"
+                            />
+                          </span>
+                        </a>
                       </span>
-                    </a>
-                  </span>
-                </th>
+                    </th>
 
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Category
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        Category
 
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-up" />
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort-up" />
+                          </span>
+                        </a>
                       </span>
-                    </a>
-                  </span>
-                </th>
+                    </th>
 
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    User
+                    <th>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        User
 
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
+                        <a href="#/">
+                          <span className="icon">
+                            <i data-cy="SortIcon" className="fas fa-sort" />
+                          </span>
+                        </a>
                       </span>
-                    </a>
-                  </span>
-                </th>
-              </tr>
-            </thead>
+                    </th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              {visibleProducts.map(({ id, name, category, user }) => (
-                <tr data-cy="Product">
-                  <td className="has-text-weight-bold" data-cy="ProductId">
-                    {id}
-                  </td>
+                <tbody>
+                  {visibleProducts.map(({ id, name, category, user }) => (
+                    <tr data-cy="Product">
+                      <td className="has-text-weight-bold" data-cy="ProductId">
+                        {id}
+                      </td>
 
-                  <td data-cy="ProductName">{name}</td>
-                  <td data-cy="ProductCategory">{`${category.icon} - ${category.title}`}</td>
+                      <td data-cy="ProductName">{name}</td>
+                      <td data-cy="ProductCategory">{`${category.icon} - ${category.title}`}</td>
 
-                  <td
-                    data-cy="ProductUser"
-                    className={user.sex === 'm'
-                      ? 'has-text-link'
-                      : 'has-text-danger'}
-                  >
-                    {user.name}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <td
+                        data-cy="ProductUser"
+                        className={user.sex === 'm'
+                          ? 'has-text-link'
+                          : 'has-text-danger'}
+                      >
+                        {user.name}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )
+            : (
+              <p data-cy="NoMatchingMessage">
+                No products matching selected criteria
+              </p>
+            )
+          }
         </div>
       </div>
     </div>
