@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 import './App.scss';
 
 import usersFromServer from './api/users';
@@ -238,7 +238,10 @@ export const App = () => {
 
                     <td
                       data-cy="ProductUser"
-                      className="has-text-danger"
+                      className={classNames(
+                        { 'has-text-link': user.sex === 'm' },
+                        { 'has-text-danger': user.sex === 'f' },
+                      )}
                     >
                       {user.name}
                     </td>
