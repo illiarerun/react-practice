@@ -40,7 +40,7 @@ export const App = () => {
   });
 
   const filterProduct = useMemo(() => (userId
-    ? products.filter(products.user.id === userId)
+    ? products.filter(product => product.user.id === userId)
     : products), [userId, products]);
 
   const filterQuery = useMemo(() => filterProduct
